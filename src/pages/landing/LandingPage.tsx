@@ -4,30 +4,34 @@ import campusqLogo from '../../assets/Professional__CampusQ__Logo_with_Fresh_Aes
 import { FaClock, FaChartLine, FaMobileAlt, FaUserGraduate, FaSchool, FaBullhorn } from 'react-icons/fa';
 import { useEffect, useState, useRef } from 'react';
 import CountUp from 'react-countup';
+import { useInView } from 'react-intersection-observer';
 
 const LandingPage = () => {
   const [scrolled, setScrolled] = useState(false);
-  const [statsVisible, setStatsVisible] = useState(true); // Start with true to show animation on load
-  const statsRef = useRef(null);
   
+  // Setup intersection observers for scroll animations
+  const [benefitsRef, benefitsInView] = useInView({
+    triggerOnce: true,
+    threshold: 0.2,
+  });
+  
+  const [statsRef, statsInView] = useInView({
+    triggerOnce: false,
+    threshold: 0.2,
+  });
+  
+  const [ctaRef, ctaInView] = useInView({
+    triggerOnce: true,
+    threshold: 0.2,
+  });
+  
+  // Setup scroll event for navbar
   useEffect(() => {
-    // Initialize stats as visible immediately for counting animation
-    setStatsVisible(true);
-    
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
-      
-      // Keep this for when stats scroll into view later
-      if (statsRef.current) {
-        const rect = statsRef.current.getBoundingClientRect();
-        const isVisible = rect.top < window.innerHeight && rect.bottom >= 0;
-        setStatsVisible(isVisible);
-      }
     };
     
     window.addEventListener('scroll', handleScroll);
-    // Trigger once on load to check initial visibility
-    handleScroll();
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
   
@@ -101,14 +105,16 @@ const LandingPage = () => {
       </section>
 
       {/* Benefits Section */}
-      <section className="py-20 bg-white relative overflow-hidden">
+      <section ref={benefitsRef} className="py-20 bg-white relative overflow-hidden">
         {/* Subtle animated background pattern */}
         <div className="absolute inset-0 opacity-5">
           <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(#6DBE45_1px,transparent_1px)] bg-[size:20px_20px]"></div>
         </div>
         
         <div className="container mx-auto px-4 relative">
-          <div className="text-center mb-16">
+          <div className={`text-center mb-16 transition-all duration-1000 transform ${
+            benefitsInView ? 'translate-y-0 opacity-100' : 'translate-y-20 opacity-0'
+          }`}>
             <h2 className="text-4xl font-bold text-dark-charcoal mb-4 relative inline-block">
               Why Use CampusQ?
               <div className="h-1 w-full bg-primary-green absolute bottom-0 left-0 transform origin-left animate-shimmer"></div>
@@ -118,7 +124,9 @@ const LandingPage = () => {
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
             {/* Benefit 1 */}
-            <div className="bg-light-gray p-8 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-2 transition-all duration-300 border-t-4 border-primary-green group relative">
+            <div className={`bg-light-gray p-8 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-2 transition-all duration-500 border-t-4 border-primary-green group relative ${
+              benefitsInView ? 'translate-y-0 opacity-100' : 'translate-y-12 opacity-0'
+            }`} style={{ transitionDelay: '0ms' }}>
               <div className="absolute inset-x-0 -top-5 flex justify-center">
                 <div className="bg-primary-green text-white rounded-full h-16 w-16 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
                   <FaClock size={32} className="group-hover:animate-pulse" />
@@ -131,7 +139,9 @@ const LandingPage = () => {
             </div>
 
             {/* Benefit 2 */}
-            <div className="bg-light-gray p-8 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-2 transition-all duration-300 border-t-4 border-primary-green group relative">
+            <div className={`bg-light-gray p-8 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-2 transition-all duration-500 border-t-4 border-primary-green group relative ${
+              benefitsInView ? 'translate-y-0 opacity-100' : 'translate-y-12 opacity-0'
+            }`} style={{ transitionDelay: '150ms' }}>
               <div className="absolute inset-x-0 -top-5 flex justify-center">
                 <div className="bg-primary-green text-white rounded-full h-16 w-16 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
                   <FaChartLine size={32} className="group-hover:animate-pulse" />
@@ -144,7 +154,9 @@ const LandingPage = () => {
             </div>
 
             {/* Benefit 3 */}
-            <div className="bg-light-gray p-8 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-2 transition-all duration-300 border-t-4 border-primary-green group relative">
+            <div className={`bg-light-gray p-8 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-2 transition-all duration-500 border-t-4 border-primary-green group relative ${
+              benefitsInView ? 'translate-y-0 opacity-100' : 'translate-y-12 opacity-0'
+            }`} style={{ transitionDelay: '300ms' }}>
               <div className="absolute inset-x-0 -top-5 flex justify-center">
                 <div className="bg-primary-green text-white rounded-full h-16 w-16 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
                   <FaMobileAlt size={32} className="group-hover:animate-pulse" />
@@ -168,9 +180,11 @@ const LandingPage = () => {
         
         <div className="container mx-auto px-4 relative z-10">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div className="text-center transform transition-all hover:scale-105 duration-300">
+            <div className={`text-center transform transition-all hover:scale-105 duration-500 ${
+              statsInView ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
+            }`} style={{ transitionDelay: '0ms' }}>
               <div className="text-5xl font-bold text-primary-green mb-2 flex justify-center items-center gap-2">
-                {statsVisible ? (
+                {statsInView ? (
                   <CountUp end={5000} duration={2.5} separator="," suffix="+" />
                 ) : (
                   <span>0+</span>
@@ -179,9 +193,11 @@ const LandingPage = () => {
               </div>
               <p className="text-white">Students Served</p>
             </div>
-            <div className="text-center transform transition-all hover:scale-105 duration-300">
+            <div className={`text-center transform transition-all hover:scale-105 duration-500 ${
+              statsInView ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
+            }`} style={{ transitionDelay: '150ms' }}>
               <div className="text-5xl font-bold text-primary-green mb-2 flex justify-center items-center gap-2">
-                {statsVisible ? (
+                {statsInView ? (
                   <CountUp end={15} duration={2} suffix="+" />
                 ) : (
                   <span>0+</span>
@@ -190,9 +206,11 @@ const LandingPage = () => {
               </div>
               <p className="text-white">Departments</p>
             </div>
-            <div className="text-center transform transition-all hover:scale-105 duration-300">
+            <div className={`text-center transform transition-all hover:scale-105 duration-500 ${
+              statsInView ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
+            }`} style={{ transitionDelay: '300ms' }}>
               <div className="text-5xl font-bold text-primary-green mb-2 flex justify-center items-center gap-2">
-                {statsVisible ? (
+                {statsInView ? (
                   <CountUp end={30} duration={2} suffix="min" />
                 ) : (
                   <span>0min</span>
@@ -201,9 +219,11 @@ const LandingPage = () => {
               </div>
               <p className="text-white">Avg. Time Saved</p>
             </div>
-            <div className="text-center transform transition-all hover:scale-105 duration-300">
+            <div className={`text-center transform transition-all hover:scale-105 duration-500 ${
+              statsInView ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
+            }`} style={{ transitionDelay: '450ms' }}>
               <div className="text-5xl font-bold text-primary-green mb-2 flex justify-center items-center gap-2">
-                {statsVisible ? (
+                {statsInView ? (
                   <CountUp end={98} duration={3} suffix="%" />
                 ) : (
                   <span>0%</span>
@@ -217,7 +237,7 @@ const LandingPage = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-r from-dark-green to-primary-green relative overflow-hidden">
+      <section ref={ctaRef} className="py-20 bg-gradient-to-r from-dark-green to-primary-green relative overflow-hidden">
         {/* Animated overlay */}
         <div className="absolute inset-0">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.1)_0%,transparent_70%)]"></div>
@@ -229,17 +249,28 @@ const LandingPage = () => {
           <div className="absolute h-16 w-16 rounded-full bg-white/5 bottom-1/4 right-1/4 animate-float" style={{ animationDuration: '12s' }}></div>
         </div>
         
-        <div className="container mx-auto px-4 text-center relative z-10">
+        <div className={`container mx-auto px-4 text-center relative z-10 transition-all duration-1000 ${
+          ctaInView ? 'opacity-100 transform-none' : 'opacity-0 transform translate-y-10'
+        }`}>
           <img 
             src={campusqLogo} 
             alt="CampusQ" 
-            className="h-24 mx-auto mb-6 animate-pulse-slow filter drop-shadow-[0_0_15px_rgba(255,255,255,0.5)]" 
+            className={`h-24 mx-auto mb-6 animate-pulse-slow filter drop-shadow-[0_0_15px_rgba(255,255,255,0.5)] transition-all duration-700 ${
+              ctaInView ? 'opacity-100 transform scale-100' : 'opacity-0 transform scale-90'
+            }`}
+            style={{ transitionDelay: '200ms' }}
           />
-          <h2 className="text-5xl font-bold text-white mb-6 animate-fadeIn" style={{ animationDuration: '1s', animationDelay: '0.2s' }}>Ready to skip the line?</h2>
-          <p className="text-white text-xl mb-10 max-w-2xl mx-auto animate-fadeIn" style={{ animationDuration: '1s', animationDelay: '0.4s' }}>
+          <h2 className={`text-5xl font-bold text-white mb-6 transition-all duration-700 ${
+            ctaInView ? 'opacity-100 transform-none' : 'opacity-0 transform translate-y-5'
+          }`} style={{ transitionDelay: '400ms' }}>Ready to skip the line?</h2>
+          <p className={`text-white text-xl mb-10 max-w-2xl mx-auto transition-all duration-700 ${
+            ctaInView ? 'opacity-100 transform-none' : 'opacity-0 transform translate-y-5'
+          }`} style={{ transitionDelay: '600ms' }}>
             Join thousands of students who are already saving time with CampusQ.
           </p>
-          <div className="flex flex-wrap justify-center gap-6 animate-fadeIn" style={{ animationDuration: '1s', animationDelay: '0.6s' }}>
+          <div className={`flex flex-wrap justify-center gap-6 transition-all duration-700 ${
+            ctaInView ? 'opacity-100 transform-none' : 'opacity-0 transform translate-y-5'
+          }`} style={{ transitionDelay: '800ms' }}>
             <Link
               to="/signup"
               className="bg-white text-primary-green hover:bg-light-gray font-bold py-4 px-10 rounded-lg transition-all duration-300 inline-block shadow-lg hover:shadow-xl transform hover:-translate-y-2 hover:scale-105 relative group overflow-hidden"

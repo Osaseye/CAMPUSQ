@@ -1,69 +1,92 @@
-# React + TypeScript + Vite
+# CampusQ – Smart Campus Queue Management
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+<p align="center">
+  <img alt="CampusQ Logo" src="src/assets/Campusq.png" width="160" />
+</p>
 
-Currently, two official plugins are available:
+CampusQ is a modern React + TypeScript application that helps universities manage student queues across multiple departments. It features a clean UI, smooth animations, and simulated real-time queue updates for demos.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
 
-## Expanding the ESLint configuration
+- Student
+  - Book queue slot by department and time
+  - View live queue position and estimated wait time
+  - Turn notifications when you are close (simulated)
+  - Cancel/leave queue
+- Staff/Admin
+  - View departmental queues
+  - Mark students as served and remove entries
+  - Basic metrics: total in queue, departments, avg wait (simulated)
+- System
+  - Multi-department support (Bursary, Registry, Clinic, Student Affairs)
+  - Animated UI with Framer Motion
+  - Tailwind CSS styling
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Tech Stack
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- React + TypeScript + Vite
+- Tailwind CSS
+- Framer Motion, React Icons
+- Context API / custom store (`useStore`, `useUser`)
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+## Getting Started
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+1. Install dependencies
+   - npm install
+2. Run the dev server
+   - npm run dev
+3. Open the app at the printed local URL.
+
+## Key Pages
+
+- Landing: `src/pages/landing/LandingPage.tsx`
+- Login/Signup: `src/pages/auth/`
+- Booking: `src/pages/booking/BookingPage.tsx`
+- Status: `src/pages/status/StatusPage.tsx`
+- Dashboard (User): `src/pages/welcome/WelcomePage.tsx`
+- Admin: `src/pages/admin/AdminDashboard.tsx`
+
+## Screenshots
+
+> Note: Images are stored in `src/assets/images`.
+
+<p>
+  <img alt="Screenshot 188" src="src/assets/images/Screenshot (188).png" width="45%" />
+  <img alt="Screenshot 189" src="src/assets/images/Screenshot (189).png" width="45%" />
+</p>
+<p>
+  <img alt="Screenshot 190" src="src/assets/images/Screenshot (190).png" width="45%" />
+  <img alt="Screenshot 191" src="src/assets/images/Screenshot (191).png" width="45%" />
+</p>
+<p>
+  <img alt="Screenshot 192" src="src/assets/images/Screenshot (192).png" width="45%" />
+  <img alt="Screenshot 193" src="src/assets/images/Screenshot (193).png" width="45%" />
+</p>
+
+## Project Structure (partial)
+
+```
+CAMPUSQ/
+  src/
+    pages/
+      landing/
+      auth/
+      booking/
+      status/
+      welcome/
+      admin/
+    components/
+    context/
+    data/
+    assets/
+      images/
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Notes
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+- Authentication and notifications are simulated for demo purposes.
+- Average wait time is a mock value for display.
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## License
+
+This project is for educational/demo purposes.
