@@ -9,9 +9,10 @@ interface LayoutProps {
 }
 
 const Layout = ({ children }: LayoutProps) => {
-  const { username, isAuthenticated, logout } = useUser();
+  const { userInfo, isAuthenticated, logout } = useUser();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const displayName = userInfo?.firstName || userInfo?.username || 'User';
   
   // Handle scroll effect for navbar
   useEffect(() => {
@@ -74,7 +75,7 @@ const Layout = ({ children }: LayoutProps) => {
             {isAuthenticated ? (
               <div className="flex items-center gap-4">
                 <div className="text-white">
-                  Welcome, <span className="font-semibold text-primary-green">{username}</span>
+                  Welcome, <span className="font-semibold text-primary-green">{displayName}</span>
                 </div>
                 <button 
                   onClick={logout} 
@@ -130,7 +131,7 @@ const Layout = ({ children }: LayoutProps) => {
               <>
                 <div className="px-4 py-2 border-b border-primary-green/30">
                   <div className="text-white text-lg">
-                    Welcome, <span className="font-semibold text-primary-green">{username}</span>
+                    Welcome, <span className="font-semibold text-primary-green">{displayName}</span>
                   </div>
                 </div>
                 <Link 

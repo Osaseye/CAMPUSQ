@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { useUser } from '../../context/UserContext';
-import { FaUser, FaIdCard, FaEnvelope, FaBell, FaClock, FaUsers, FaBuilding, FaHistory, FaSignOutAlt, FaTimes } from 'react-icons/fa';
+import { FaUser, FaIdCard, FaEnvelope, FaBell, FaClock, FaUsers, FaBuilding, FaHistory, FaTimes } from 'react-icons/fa';
 
 const WelcomePage = () => {
   const { 

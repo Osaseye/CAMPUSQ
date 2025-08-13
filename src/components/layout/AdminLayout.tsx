@@ -8,8 +8,10 @@ interface AdminLayoutProps {
 }
 
 const AdminLayout = ({ children }: AdminLayoutProps) => {
-  const { username, isAuthenticated, isAdmin, logout } = useUser();
+  const { userInfo, isAuthenticated, isAdmin, logout } = useUser();
   const navigate = useNavigate();
+  const displayName = userInfo?.firstName || userInfo?.username || 'Admin';
+  const displayInitial = (userInfo?.firstName?.[0] || 'A').toUpperCase();
   
   // Redirect if not authenticated as admin
   useEffect(() => {
@@ -93,9 +95,9 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 bg-primary-green rounded-full text-white flex items-center justify-center font-bold">
-                  {username ? username.charAt(0).toUpperCase() : 'A'}
+                  {displayInitial}
                 </div>
-                <span className="font-medium">{username || 'Admin'}</span>
+                <span className="font-medium">{displayName}</span>
               </div>
             </div>
           </div>

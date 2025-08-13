@@ -2,13 +2,10 @@ import { Link } from 'react-router-dom';
 import Layout from '../../components/layout/Layout';
 import campusqLogo from '../../assets/Professional__CampusQ__Logo_with_Fresh_Aesthetic-removebg-preview.png';
 import { FaClock, FaChartLine, FaMobileAlt, FaUserGraduate, FaSchool, FaBullhorn } from 'react-icons/fa';
-import { useEffect, useState, useRef } from 'react';
 import CountUp from 'react-countup';
 import { useInView } from 'react-intersection-observer';
 
 const LandingPage = () => {
-  const [scrolled, setScrolled] = useState(false);
-  
   // Setup intersection observers for scroll animations
   const [benefitsRef, benefitsInView] = useInView({
     triggerOnce: true,
@@ -24,16 +21,6 @@ const LandingPage = () => {
     triggerOnce: true,
     threshold: 0.2,
   });
-  
-  // Setup scroll event for navbar
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
-    };
-    
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
   
   return (
     <Layout>
