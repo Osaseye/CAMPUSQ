@@ -62,6 +62,14 @@ CampusQ is a modern React + TypeScript application that helps universities manag
   <img alt="Screenshot 192" src="src/assets/images/Screenshot (192).png" width="45%" />
   <img alt="Screenshot 193" src="src/assets/images/Screenshot (193).png" width="45%" />
 </p>
+<p>
+  <img alt="Screenshot 192" src="src/assets/images/Screenshot (194).png" width="45%" />
+  <img alt="Screenshot 193" src="src/assets/images/Screenshot (195).png" width="45%" />
+</p>
+<p>
+  <img alt="Screenshot 192" src="src/assets/images/Screenshot (196).png" width="45%" />
+  <img alt="Screenshot 193" src="src/assets/images/Screenshot (197).png" width="45%" />
+</p>
 
 ## Project Structure (partial)
 
