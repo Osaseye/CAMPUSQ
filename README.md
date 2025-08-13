@@ -1,7 +1,7 @@
 # CampusQ – Smart Campus Queue Management
 
 <p align="center">
-  <img alt="CampusQ Logo" src="src/assets/Campusq.png" width="160" />
+  <img alt="CampusQ Logo" src="src/assets/Professional &apos;CampusQ&apos; Logo with Fresh Aesthetic.png" width="160" />
 </p>
 
 CampusQ is a modern React + TypeScript application that helps universities manage student queues across multiple departments. It features a clean UI, smooth animations, and simulated real-time queue updates for demos.
