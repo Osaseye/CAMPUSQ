@@ -2,31 +2,31 @@ import { Link, useNavigate } from 'react-router-dom';
 import campusqLogo from '../../assets/Professional__CampusQ__Logo_with_Fresh_Aesthetic-removebg-preview.png';
 import { useUser } from '../../context/useUser';
 import { useState } from 'react';
-import { FaBars, FaTimes, FaTachometerAlt, FaUsers, FaBuilding, FaUsersCog, FaChartBar, FaCog, FaHome, FaSignOutAlt } from 'react-icons/fa';
+import { FaBars, FaTimes, FaTachometerAlt, FaUsers, FaHistory, FaHome, FaSignOutAlt } from 'react-icons/fa';
 
-interface AdminLayoutProps {
+interface StaffLayoutProps {
   children: React.ReactNode;
 }
 
-const AdminLayout = ({ children }: AdminLayoutProps) => {
-  const { userInfo, logout } = useUser();
+const StaffLayout = ({ children }: StaffLayoutProps) => {
+  const { userInfo, isAuthenticated, isStaff, logout } = useUser();
   const navigate = useNavigate();
-  const displayName = userInfo?.firstName || userInfo?.username || 'Admin';
-  const displayInitial = (userInfo?.firstName?.[0] || 'A').toUpperCase();
+  const displayName = userInfo?.firstName || userInfo?.username || 'Staff';
+  const displayInitial = (userInfo?.firstName?.[0] || 'S').toUpperCase();
+  const departmentName = userInfo?.department || 'Department';
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  
-  // Authentication check removed to allow open access
+
   const handleToggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
   };
-  
+
   return (
     <div className="min-h-screen bg-light-gray font-poppins flex flex-col md:flex-row">
       {/* Mobile Sidebar Toggle Button */}
       <div className="md:hidden fixed top-4 left-4 z-30">
         <button 
           onClick={handleToggleSidebar}
-          className="p-2 rounded-md bg-primary-green text-white shadow-lg"
+          className="p-2 rounded-md bg-blue-500 text-white shadow-lg"
         >
           {sidebarOpen ? <FaTimes size={20} /> : <FaBars size={20} />}
         </button>
@@ -41,62 +41,45 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
         <div className="p-4 flex items-center border-b border-gray-700">
           <img src={campusqLogo} alt="CampusQ Logo" className="h-8 mr-2" />
           <div>
-            <h3 className="font-bold text-lg text-primary-green">CampusQ</h3>
-            <p className="text-xs">Admin Panel</p>
+            <h3 className="font-bold text-lg text-blue-500">CampusQ</h3>
+            <p className="text-xs">Staff Portal</p>
           </div>
         </div>
+        <div className="p-4 border-b border-gray-700">
+          <h3 className="font-medium text-blue-400">{departmentName}</h3>
+          <p className="text-xs text-gray-400">Staff Dashboard</p>
+        </div>
         <nav className="py-4 overflow-y-auto">
-          <div className="px-4 py-2 text-xs text-gray-400 uppercase">Management</div>
+          <div className="px-4 py-2 text-xs text-gray-400 uppercase">Queue Management</div>
           <Link 
-            to="/admin" 
-            className="flex items-center px-4 py-2 text-sm hover:bg-primary-green/20 border-l-4 border-primary-green"
+            to="/staff" 
+            className="flex items-center px-4 py-2 text-sm hover:bg-blue-500/20 border-l-4 border-blue-500"
             onClick={() => setSidebarOpen(false)}
           >
             <FaTachometerAlt className="mr-2" /> Dashboard
           </Link>
           <Link 
-            to="/admin/queues" 
-            className="flex items-center px-4 py-2 text-sm hover:bg-primary-green/20 border-l-4 border-transparent"
+            to="/staff/queue" 
+            className="flex items-center px-4 py-2 text-sm hover:bg-blue-500/20 border-l-4 border-transparent"
             onClick={() => setSidebarOpen(false)}
           >
-            <FaUsers className="mr-2" /> Queue Monitoring
+            <FaUsers className="mr-2" /> Current Queue
           </Link>
           <Link 
-            to="/admin/departments" 
-            className="flex items-center px-4 py-2 text-sm hover:bg-primary-green/20 border-l-4 border-transparent"
+            to="/staff/history" 
+            className="flex items-center px-4 py-2 text-sm hover:bg-blue-500/20 border-l-4 border-transparent"
             onClick={() => setSidebarOpen(false)}
           >
-            <FaBuilding className="mr-2" /> Departments
-          </Link>
-          <Link 
-            to="/admin/staff" 
-            className="flex items-center px-4 py-2 text-sm hover:bg-primary-green/20 border-l-4 border-transparent"
-            onClick={() => setSidebarOpen(false)}
-          >
-            <FaUsersCog className="mr-2" /> Staff Management
-          </Link>
-          <Link 
-            to="/admin/reports" 
-            className="flex items-center px-4 py-2 text-sm hover:bg-primary-green/20 border-l-4 border-transparent"
-            onClick={() => setSidebarOpen(false)}
-          >
-            <FaChartBar className="mr-2" /> Reports & Analytics
+            <FaHistory className="mr-2" /> Service History
           </Link>
           
           <div className="px-4 py-2 mt-6 text-xs text-gray-400 uppercase">Account</div>
           <Link 
-            to="/admin/settings" 
-            className="flex items-center px-4 py-2 text-sm hover:bg-primary-green/20 border-l-4 border-transparent"
-            onClick={() => setSidebarOpen(false)}
-          >
-            <FaCog className="mr-2" /> System Settings
-          </Link>
-          <Link 
             to="/" 
-            className="flex items-center px-4 py-2 text-sm hover:bg-primary-green/20 border-l-4 border-transparent"
+            className="flex items-center px-4 py-2 text-sm hover:bg-blue-500/20 border-l-4 border-transparent"
             onClick={() => setSidebarOpen(false)}
           >
-            <FaHome className="mr-2" /> Public Site
+            <FaHome className="mr-2" /> Main Site
           </Link>
           <button 
             onClick={() => {logout(); setSidebarOpen(false);}} 
@@ -109,20 +92,20 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
       
       {/* Main content */}
       <div className="flex-1 flex flex-col md:ml-64">
-        {/* Admin Header */}
+        {/* Staff Header */}
         <header className="bg-white shadow-md p-4">
           <div className="flex justify-between items-center">
-            <h1 className="text-xl md:text-2xl font-bold text-dark-charcoal ml-8 md:ml-0">Admin Dashboard</h1>
+            <h1 className="text-xl md:text-2xl font-bold text-dark-charcoal ml-8 md:ml-0">Staff Dashboard</h1>
             <div className="flex items-center gap-2 md:gap-4">
               <div className="relative hidden md:block">
-                <span className="absolute right-0 top-0 h-2 w-2 bg-primary-green rounded-full"></span>
+                <span className="absolute right-0 top-0 h-2 w-2 bg-blue-500 rounded-full"></span>
                 <span className="sr-only">Notifications</span>
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                 </svg>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-primary-green rounded-full text-white flex items-center justify-center font-bold">
+                <div className="w-8 h-8 bg-blue-500 rounded-full text-white flex items-center justify-center font-bold">
                   {displayInitial}
                 </div>
                 <span className="font-medium hidden md:inline">{displayName}</span>
@@ -153,4 +136,4 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
   );
 };
 
-export default AdminLayout;
+export default StaffLayout;

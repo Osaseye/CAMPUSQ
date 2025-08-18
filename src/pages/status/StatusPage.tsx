@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Layout from '../../components/layout/Layout';
 import { useStore } from '../../data/store';
-import { useUser } from '../../context/UserContext';
+import { useUser } from '../../context/useUser';
 import { FaBell, FaTimes } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -50,6 +50,19 @@ const StatusPage = () => {
     }
   }, [selectedQueue]);
   
+  // Set up countdown timer
+  useEffect(() => {
+    // Start countdown timer that decreases by 1 second
+    const intervalId = setInterval(() => {
+      setRemainingTime(prev => {
+        if (prev <= 0) return 0;
+        return prev - 1;
+      });
+    }, 1000);
+    
+    return () => clearInterval(intervalId);
+  }, []);
+  
   // Format remaining time as MM:SS or HH:MM:SS
   const formatTime = (seconds: number) => {
     if (seconds < 0) return '00:00';
@@ -67,7 +80,14 @@ const StatusPage = () => {
   
   const handleCancelQueue = (queueId: string) => {
     // In a real app this would call an API to remove the user from the queue
+    
+    // First, remove from user context
+    leaveQueue(queueId);
+    
+    // Also remove from store for dashboard sync
     cancelBooking(queueId);
+    
+    // Navigate to welcome page
     navigate('/welcome');
   };
   
@@ -269,31 +289,31 @@ const StatusPage = () => {
               </div>
               
               {/* Queue Position */}
-              <div className="py-8 px-6">
-                <div className="flex flex-col md:flex-row items-center justify-between gap-8">
-                  <div className="text-center flex-1">
-                    <h3 className="text-gray-500 text-lg mb-2">Your Position</h3>
-                    <div className="text-primary-green text-7xl font-bold relative inline-flex items-center justify-center">
+              <div className="py-6 md:py-8 px-4 md:px-6">
+                <div className="flex flex-col md:flex-row items-center justify-between gap-5 md:gap-8">
+                  <div className="text-center flex-1 w-full">
+                    <h3 className="text-gray-500 text-base md:text-lg mb-2">Your Position</h3>
+                    <div className="text-primary-green text-5xl md:text-7xl font-bold relative inline-flex items-center justify-center">
                       <div className="absolute inset-0 bg-primary-green/10 rounded-full transform scale-150 animate-pulse" style={{ animationDuration: '2s' }}></div>
                       <span className="relative z-10">{selectedQueue.currentPosition}</span>
                     </div>
-                    <p className="text-gray-600 mt-2">
+                    <p className="text-gray-600 mt-2 text-sm md:text-base">
                       {selectedQueue.currentPosition === 1 
                         ? "You're next!" 
                         : `${selectedQueue.currentPosition === 2 ? 'Almost there!' : `${selectedQueue.currentPosition - 1} people ahead of you`}`}
                     </p>
                   </div>
                   
-                  <div className="h-24 w-px bg-gray-200 hidden md:block"></div>
+                  <div className="h-px w-1/2 md:h-24 md:w-px bg-gray-200 my-4 md:my-0"></div>
                   
-                  <div className="text-center flex-1">
-                    <h3 className="text-gray-500 text-lg mb-2">Estimated Wait</h3>
-                    <div className="text-dark-charcoal text-4xl font-bold">
-                      <div className="inline-flex items-center justify-center w-auto h-auto bg-light-gray rounded-xl p-4">
+                  <div className="text-center flex-1 w-full">
+                    <h3 className="text-gray-500 text-base md:text-lg mb-2">Estimated Wait</h3>
+                    <div className="text-dark-charcoal text-3xl md:text-4xl font-bold">
+                      <div className="inline-flex items-center justify-center w-auto h-auto bg-light-gray rounded-xl p-3 md:p-4">
                         {formatTime(remainingTime)}
                       </div>
                     </div>
-                    <p className="text-gray-600 mt-2">
+                    <p className="text-gray-600 mt-2 text-sm md:text-base">
                       {remainingTime > 3600 
                         ? 'Consider coming back later' 
                         : remainingTime > 900 
@@ -303,16 +323,16 @@ const StatusPage = () => {
                   </div>
                 </div>
                 
-                <div className="mt-10 pt-6 border-t border-gray-200">
+                <div className="mt-8 md:mt-10 pt-5 md:pt-6 border-t border-gray-200">
                   <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
-                    <div className="text-gray-600">
+                    <div className="text-gray-600 text-sm md:text-base text-center md:text-left">
                       <p className="mb-1"><strong>Average Time per Person:</strong> {selectedQueue.estimatedTimeMinutes} mins</p>
                       <p><strong>Queue Progress:</strong> {Math.round(((selectedQueue.totalPeople - selectedQueue.currentPosition) / selectedQueue.totalPeople) * 100)}% complete</p>
                     </div>
                     
                     <button
                       onClick={() => handleCancelQueue(selectedQueue.id)}
-                      className="bg-white hover:bg-gray-50 text-error-red border border-error-red font-medium py-2 px-4 rounded-lg transition-colors duration-300 flex items-center gap-2"
+                      className="bg-white hover:bg-gray-50 text-error-red border border-error-red font-medium py-2 px-4 rounded-lg transition-colors duration-300 flex items-center gap-2 w-full md:w-auto justify-center md:justify-start"
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -353,7 +373,7 @@ const StatusPage = () => {
                     <span className="font-medium">{userInfo.firstName} {userInfo.lastName}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-500">Student ID:</span>
+                    <span className="text-gray-500">Matric Number:</span>
                     <span className="font-medium">{userInfo.studentId || 'N/A'}</span>
                   </div>
                   <div className="flex justify-between">
@@ -382,7 +402,7 @@ const StatusPage = () => {
                     <svg className="w-5 h-5 text-primary-green flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
                     </svg>
-                    <span className="text-gray-600">Have your student ID ready when called</span>
+                    <span className="text-gray-600">Have your matric number ready when called</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <svg className="w-5 h-5 text-primary-green flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">

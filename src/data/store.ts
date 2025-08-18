@@ -45,7 +45,7 @@ const dummyBookings: Booking[] = [
   { 
     id: 'booking-1', 
     name: 'John Smith', 
-    studentId: 'ST12345', 
+    studentId: '22/0123', 
     department: 'Student Services', 
     timeSlot: '10:00 AM', 
     queueNumber: 1, 
@@ -54,7 +54,7 @@ const dummyBookings: Booking[] = [
   { 
     id: 'booking-2', 
     name: 'Emma Johnson', 
-    studentId: 'ST23456', 
+    studentId: '23/4567', 
     department: 'Financial Aid', 
     timeSlot: '10:30 AM', 
     queueNumber: 2, 
@@ -63,7 +63,7 @@ const dummyBookings: Booking[] = [
   { 
     id: 'booking-3', 
     name: 'Michael Brown', 
-    studentId: 'ST34567', 
+    studentId: '21/8901', 
     department: 'Academic Advising', 
     timeSlot: '11:00 AM', 
     queueNumber: 3, 

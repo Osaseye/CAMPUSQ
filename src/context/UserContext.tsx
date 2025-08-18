@@ -1,11 +1,13 @@
-import { createContext, useState, useContext, useEffect, type ReactNode } from 'react';
+import { createContext, useState, useEffect, type ReactNode } from 'react';
 
 interface UserInfo {
   username: string;
   firstName: string;
   lastName: string;
   email: string;
-  studentId?: string;
+  studentId?: string; // now representing matric number in format XX/XXXX
+  department?: string; // For staff members
+  role?: 'student' | 'staff' | 'admin'; // User role
 }
 
 interface Queue {
@@ -32,28 +34,34 @@ interface UserContextProps {
   setIsAuthenticated: (isAuthenticated: boolean) => void;
   isAdmin: boolean;
   setIsAdmin: (isAdmin: boolean) => void;
+  isStaff: boolean;
+  setIsStaff: (isStaff: boolean) => void;
   userQueues: Queue[];
   setUserQueues: (queues: Queue[]) => void;
   availableDepartments: Department[];
   setAvailableDepartments: (departments: Department[]) => void;
-  joinQueue: (departmentId: string, queueName: string) => void;
+  joinQueue: (departmentId: string, queueName: string, timeSlot?: string) => void;
   leaveQueue: (queueId: string) => void;
   updateQueuePositions: () => void;
+  loginStaff: (email: string, password: string, department?: string) => Promise<boolean>;
   logout: () => void;
 }
 
 const UserContext = createContext<UserContextProps | undefined>(undefined);
 
 export const UserProvider = ({ children }: { children: ReactNode }) => {
+  // Initial state for an unauthenticated user
   const [userInfo, setUserInfo] = useState<UserInfo>({
     username: '',
     firstName: '',
     lastName: '',
     email: '',
     studentId: '',
+    role: 'student'
   });
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isStaff, setIsStaff] = useState(false);
   const [userQueues, setUserQueues] = useState<Queue[]>([]);
   const [availableDepartments, setAvailableDepartments] = useState<Department[]>([
     {
@@ -118,16 +126,36 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   }, [isAuthenticated]);
 
   // Join a queue
-  const joinQueue = (departmentId: string, queueName: string) => {
+  const joinQueue = (departmentId: string, queueName: string, timeSlot?: string) => {
     const department = availableDepartments.find(d => d.id === departmentId);
     if (!department) return;
 
-    // Create a random position between 1-5
-    const position = Math.floor(Math.random() * 5) + 1;
-    // Create a random total between position + 3 to position + 10
-    const total = position + Math.floor(Math.random() * 8) + 3;
-    // Random estimated time per person between 5-15 minutes
-    const estimatedTime = Math.floor(Math.random() * 11) + 5;
+    // Calculate position as last in queue (total + 1)
+    // Base total people between 5-15
+    const basePeople = Math.floor(Math.random() * 11) + 5;
+    const total = basePeople;
+    const position = total; // Position is last in queue
+    
+    // Use timeSlot to adjust estimated time if provided
+    let estimatedTime = Math.floor(Math.random() * 11) + 5; // Default 5-15 minutes
+    
+    if (timeSlot) {
+      // Parse time slot to adjust estimated time
+      // Earlier slots get faster service (just for demo)
+      if (timeSlot.includes('9:00') || timeSlot.includes('9:30')) {
+        estimatedTime = Math.floor(Math.random() * 5) + 3; // 3-8 minutes
+      } else if (timeSlot.includes('10:00') || timeSlot.includes('10:30')) {
+        estimatedTime = Math.floor(Math.random() * 6) + 4; // 4-10 minutes
+      } else if (timeSlot.includes('11:00') || timeSlot.includes('11:30')) {
+        estimatedTime = Math.floor(Math.random() * 7) + 5; // 5-12 minutes
+      } else if (timeSlot.includes('12:00') || timeSlot.includes('12:30')) {
+        estimatedTime = Math.floor(Math.random() * 10) + 8; // 8-18 minutes (lunch rush)
+      } else if (timeSlot.includes('1:00') || timeSlot.includes('1:30')) {
+        estimatedTime = Math.floor(Math.random() * 10) + 8; // 8-18 minutes (lunch rush)
+      } else {
+        estimatedTime = Math.floor(Math.random() * 8) + 5; // 5-13 minutes
+      }
+    }
 
     const newQueue: Queue = {
       id: `q-${Date.now()}`,
@@ -143,7 +171,18 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
 
   // Leave a queue
   const leaveQueue = (queueId: string) => {
+    // Remove the queue from user's queues
     setUserQueues(prev => prev.filter(q => q.id !== queueId));
+    
+    // Also remove it from the Zustand store for dashboard sync
+    // Note: In a real app, you'd make an API call here
+    try {
+      // We don't have direct access to store.cancelBooking here,
+      // but this will be handled in StatusPage.tsx
+      console.log('Queue removed:', queueId);
+    } catch (error) {
+      console.error('Error removing queue:', error);
+    }
   };
 
   // Update queue positions (simulate progress)
@@ -170,6 +209,49 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     return () => clearInterval(intervalId);
   }, [isAuthenticated, userQueues.length]);
 
+  // Mock staff login
+  const loginStaff = async (email: string, password: string, selectedDepartment?: string): Promise<boolean> => {
+    // In a real app, this would make an API call to verify credentials
+    // For this demo, we'll accept any email and any password
+    if (email && password) {
+      // Use the selected department if provided, otherwise determine from email
+      const emailPrefix = email.includes('@') ? email.split('@')[0] : email;
+      let department = selectedDepartment || 'Financial Aid'; // Default to selected department or Financial Aid
+      
+      // If no department was provided, try to guess from email
+      if (!selectedDepartment) {
+        if (emailPrefix.includes('finance') || emailPrefix.includes('aid')) {
+          department = 'Financial Aid';
+        } else if (emailPrefix.includes('reg') || emailPrefix.includes('register')) {
+          department = 'Registration';
+        } else if (emailPrefix.includes('advise') || emailPrefix.includes('academic')) {
+          department = 'Academic Advising';
+        } else if (emailPrefix.includes('it') || emailPrefix.includes('tech')) {
+          department = 'IT Support';
+        } else if (emailPrefix.includes('student') || emailPrefix.includes('affairs')) {
+          department = 'Student Affairs';
+        }
+      }
+      
+      setUserInfo({
+        username: email.split('@')[0],
+        firstName: email.split('@')[0].charAt(0).toUpperCase() + email.split('@')[0].slice(1),
+        lastName: 'Staff',
+        email: email,
+        department: department,
+        role: 'staff'
+      });
+      
+      setIsAuthenticated(true);
+      setIsAdmin(false);
+      setIsStaff(true);
+      
+      return true;
+    }
+    
+    return false;
+  };
+
   const logout = () => {
     setUserInfo({
       username: '',
@@ -177,9 +259,11 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
       lastName: '',
       email: '',
       studentId: '',
+      role: 'student'
     });
     setIsAuthenticated(false);
     setIsAdmin(false);
+    setIsStaff(false);
     setUserQueues([]);
   };
 
@@ -192,6 +276,8 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         setIsAuthenticated,
         isAdmin,
         setIsAdmin,
+        isStaff,
+        setIsStaff,
         userQueues,
         setUserQueues,
         availableDepartments,
@@ -199,6 +285,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         joinQueue,
         leaveQueue,
         updateQueuePositions,
+        loginStaff,
         logout
       }}
     >
@@ -207,10 +294,5 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
-export const useUser = () => {
-  const context = useContext(UserContext);
-  if (context === undefined) {
-    throw new Error('useUser must be used within a UserProvider');
-  }
-  return context;
-};
+// Export the context to be used in useUser.ts
+export { UserContext };

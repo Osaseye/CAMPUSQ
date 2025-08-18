@@ -1,5 +1,8 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { UserProvider, useUser } from './context/UserContext';
+import { UserProvider } from './context/UserContext';
+import { useUser } from './context/useUser';
+import { AdminProvider } from './context/AdminContext';
+import { StaffProvider } from './context/StaffContext';
 import { useState, useEffect } from 'react';
 import campusqLogo from './assets/Professional__CampusQ__Logo_with_Fresh_Aesthetic-removebg-preview.png';
 
@@ -8,23 +11,37 @@ import LandingPage from './pages/landing/LandingPage';
 import BookingPage from './pages/booking/BookingPage';
 import StatusPage from './pages/status/StatusPage';
 import AdminDashboard from './pages/admin/AdminDashboard';
+import QueueMonitoring from './pages/admin/QueueMonitoring';
+import DepartmentManagement from './pages/admin/DepartmentManagement';
+import StaffManagement from './pages/admin/StaffManagement';
+import ReportsAndAnalytics from './pages/admin/ReportsAndAnalytics';
+import SystemSettings from './pages/admin/SystemSettings';
 import LoginPage from './pages/auth/LoginPage';
 import SignupPage from './pages/auth/SignupPage';
+import ForgotPasswordPage from './pages/auth/ForgotPasswordPage';
 import WelcomePage from './pages/welcome/WelcomePage';
+import AdminLayout from './components/layout/AdminLayout';
+import StaffLayout from './components/layout/StaffLayout';
+import StaffLoginPage from './pages/staff/StaffLoginPage';
+import StaffDashboard from './pages/staff/StaffDashboard';
+import QueueViewPage from './pages/staff/QueueViewPage';
+import ServiceHistoryPage from './pages/staff/ServiceHistoryPage';
 
 // Protected Route Component
 interface ProtectedRouteProps {
   children: React.ReactNode;
   requireAuth: boolean;
   requireAdmin?: boolean;
+  requireStaff?: boolean;
 }
 
 const ProtectedRoute = ({ 
   children, 
   requireAuth,
-  requireAdmin = false 
+  requireAdmin = false,
+  requireStaff = false
 }: ProtectedRouteProps) => {
-  const { isAuthenticated, isAdmin } = useUser();
+  const { isAuthenticated, isAdmin, isStaff } = useUser();
   
   if (requireAuth && !isAuthenticated) {
     return <Navigate to="/login" replace />;
@@ -34,8 +51,19 @@ const ProtectedRoute = ({
     return <Navigate to="/welcome" replace />;
   }
   
+  if (requireAuth && requireStaff && !isStaff) {
+    return <Navigate to="/staff/login" replace />;
+  }
+  
   if (!requireAuth && isAuthenticated) {
-    return <Navigate to="/welcome" replace />;
+    // Redirect users based on role
+    if (isAdmin) {
+      return <Navigate to="/admin" replace />;
+    } else if (isStaff) {
+      return <Navigate to="/staff" replace />;
+    } else {
+      return <Navigate to="/welcome" replace />;
+    }
   }
   
   return <>{children}</>;
@@ -45,7 +73,11 @@ const ProtectedRoute = ({
 const AppWrapper = () => {
   return (
     <UserProvider>
-      <AppRoutes />
+      <AdminProvider>
+        <StaffProvider>
+          <AppRoutes />
+        </StaffProvider>
+      </AdminProvider>
     </UserProvider>
   );
 };
@@ -97,6 +129,14 @@ function AppRoutes() {
               </ProtectedRoute>
             } 
           />
+          <Route 
+            path="/forgot-password" 
+            element={
+              <ProtectedRoute requireAuth={false}>
+                <ForgotPasswordPage />
+              </ProtectedRoute>
+            } 
+          />
         
           {/* Authenticated User Routes */}
           <Route 
@@ -124,23 +164,61 @@ function AppRoutes() {
             } 
           />
           
-          {/* Admin Routes */}
+          {/* Admin Routes - No longer protected */}
           <Route 
             path="/admin" 
             element={
-              <ProtectedRoute requireAuth={true} requireAdmin={true}>
+              <AdminLayout>
                 <AdminDashboard />
-              </ProtectedRoute>
+              </AdminLayout>
             } 
           />
           <Route 
-            path="/admin/*" 
+            path="/admin/queues" 
             element={
-              <ProtectedRoute requireAuth={true} requireAdmin={true}>
-                <AdminDashboard />
-              </ProtectedRoute>
+              <AdminLayout>
+                <QueueMonitoring />
+              </AdminLayout>
             } 
           />
+          <Route 
+            path="/admin/departments" 
+            element={
+              <AdminLayout>
+                <DepartmentManagement />
+              </AdminLayout>
+            } 
+          />
+          <Route 
+            path="/admin/staff" 
+            element={
+              <AdminLayout>
+                <StaffManagement />
+              </AdminLayout>
+            } 
+          />
+          <Route 
+            path="/admin/reports" 
+            element={
+              <AdminLayout>
+                <ReportsAndAnalytics />
+              </AdminLayout>
+            } 
+          />
+          <Route 
+            path="/admin/settings" 
+            element={
+              <AdminLayout>
+                <SystemSettings />
+              </AdminLayout>
+            } 
+          />
+          
+          {/* Staff Routes */}
+          <Route path="/staff/login" element={<StaffLoginPage />} />
+          <Route path="/staff" element={<StaffLayout><StaffDashboard /></StaffLayout>} />
+          <Route path="/staff/queue" element={<StaffLayout><QueueViewPage /></StaffLayout>} />
+          <Route path="/staff/history" element={<StaffLayout><ServiceHistoryPage /></StaffLayout>} />
           
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

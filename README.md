@@ -90,6 +90,31 @@ CAMPUSQ/
       images/
 ```
 
+## future scope 
+1. Enhanced User Profile
+The current user profile in the WelcomePage is functional, but there's room for improvement:
+
+Profile Completion Indicator: Add a progress bar showing how complete the user's profile is
+Profile Edit Option: Add a button to let users update their profile information
+User Preferences: Allow users to set notification preferences or UI theme preferences
+2. User Onboarding Flow
+Welcome Tutorial: For first-time users, add a brief guided tour highlighting key features
+Personalized Recommendations: Based on their department or previous queue history, suggest relevant departments
+3. Queue Management Improvements
+Queue History: Add a section showing past queues the user has joined
+Queue Analytics: Show stats like average wait time, most visited departments, etc.
+Queue Notifications: Add options to receive notifications via SMS/email when their queue position changes
+4. UI/UX Enhancements for User Dashboard
+Save Favorite Departments: Let users bookmark departments they frequently visit
+Calendar Integration: Allow booking appointments directly from a calendar view
+Dark Mode Toggle: Add a toggle for light/dark mode preference
+5. Social Features
+Queue Position Sharing: Allow users to share their queue status with friends
+Department Ratings: Let users rate their experience after being served
+6. User Feedback System
+Quick Feedback Forms: Add a way for users to provide feedback on their queue experience
+Feature Request Option: Allow users to suggest new features
+
 ## Notes
 
 - Authentication and notifications are simulated for demo purposes.

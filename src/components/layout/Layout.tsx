@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import campusqLogo from '../../assets/Professional__CampusQ__Logo_with_Fresh_Aesthetic-removebg-preview.png';
-import { useUser } from '../../context/UserContext';
+import { useUser } from '../../context/useUser';
 import { useState, useEffect } from 'react';
 import { FaBars, FaTimes, FaChevronRight } from 'react-icons/fa';
 
@@ -100,6 +100,13 @@ const Layout = ({ children }: LayoutProps) => {
                 >
                   Sign Up
                 </Link>
+                <Link 
+                  to="/staff/login" 
+                  className="hover:text-blue-400 transition-colors relative group ml-4"
+                >
+                  Staff Portal
+                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-400 group-hover:w-full transition-all duration-300"></span>
+                </Link>
               </>
             )}
           </div>
@@ -179,6 +186,14 @@ const Layout = ({ children }: LayoutProps) => {
                   <span>Sign Up</span>
                   <FaChevronRight className="opacity-70" />
                 </Link>
+                <Link 
+                  to="/staff/login" 
+                  className="flex items-center justify-between text-white hover:text-blue-400 transition-all px-4 py-3 hover:bg-blue-400/10 rounded-lg mt-2"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <span>Staff Portal</span>
+                  <FaChevronRight className="opacity-70" />
+                </Link>
               </>
             )}
           </div>
@@ -239,6 +254,12 @@ const Layout = ({ children }: LayoutProps) => {
                   <Link to="/booking" className="text-white/70 hover:text-primary-green transition-colors relative inline-block group">
                     Book a Slot
                     <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary-green group-hover:w-full transition-all duration-300"></span>
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/staff/login" className="text-white/70 hover:text-blue-400 transition-colors relative inline-block group">
+                    Staff Portal
+                    <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-400 group-hover:w-full transition-all duration-300"></span>
                   </Link>
                 </li>
               </ul>

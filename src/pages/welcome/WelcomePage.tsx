@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { useUser } from '../../context/UserContext';
+import { useUser } from '../../context/useUser';
 import { FaUser, FaIdCard, FaEnvelope, FaBell, FaClock, FaUsers, FaBuilding, FaHistory, FaTimes } from 'react-icons/fa';
 
 const WelcomePage = () => {
@@ -83,24 +83,24 @@ const WelcomePage = () => {
             </h1>
           </div>
           
-          <div className="flex items-center gap-2 flex-wrap">
+          <div className="flex items-center gap-2 flex-wrap justify-center md:justify-end">
             <Link 
               to="/welcome" 
-              className="bg-white hover:bg-light-gray border border-gray-300 text-dark-charcoal px-4 py-2 rounded-lg shadow transition-all duration-300 flex items-center gap-2 hover:shadow-lg"
+              className="bg-white hover:bg-light-gray border border-gray-300 text-dark-charcoal px-3 md:px-4 py-1.5 md:py-2 text-sm md:text-base rounded-lg shadow transition-all duration-300 flex items-center gap-1 md:gap-2 hover:shadow-lg"
             >
               <FaUser />
               <span>Dashboard</span>
             </Link>
             <Link 
               to="/booking" 
-              className="bg-primary-green hover:bg-dark-green text-white px-4 py-2 rounded-lg shadow transition-all duration-300 flex items-center gap-2 hover:shadow-lg"
+              className="bg-primary-green hover:bg-dark-green text-white px-3 md:px-4 py-1.5 md:py-2 text-sm md:text-base rounded-lg shadow transition-all duration-300 flex items-center gap-1 md:gap-2 hover:shadow-lg"
             >
               <FaBell />
               <span>Join a Queue</span>
             </Link>
             <Link 
               to="/status" 
-              className="bg-white hover:bg-light-gray border border-gray-300 text-dark-charcoal px-4 py-2 rounded-lg shadow transition-all duration-300 flex items-center gap-2 hover:shadow-lg"
+              className="bg-white hover:bg-light-gray border border-gray-300 text-dark-charcoal px-3 md:px-4 py-1.5 md:py-2 text-sm md:text-base rounded-lg shadow transition-all duration-300 flex items-center gap-1 md:gap-2 hover:shadow-lg"
             >
               <FaHistory />
               <span>Queue Status</span>
@@ -150,7 +150,7 @@ const WelcomePage = () => {
               <div className="flex items-center gap-3 text-gray-600">
                 <FaIdCard className="text-primary-green" />
                 <div>
-                  <p className="text-sm text-gray-500">Student ID</p>
+                  <p className="text-sm text-gray-500">Matric Number</p>
                   <p className="font-medium">{userInfo.studentId || 'N/A'}</p>
                 </div>
               </div>
@@ -305,23 +305,23 @@ const WelcomePage = () => {
               {availableDepartments.map((dept) => (
                 <div 
                   key={dept.id}
-                  className="flex items-center gap-3 p-3 rounded-lg hover:bg-light-gray/50 transition-colors group border border-transparent hover:border-gray-200"
+                  className="flex flex-wrap md:flex-nowrap items-center gap-2 md:gap-3 p-3 rounded-lg hover:bg-light-gray/50 transition-colors group border border-transparent hover:border-gray-200"
                 >
                   <div className="w-10 h-10 rounded-full bg-primary-green/10 flex items-center justify-center text-xl">
                     {dept.logoUrl}
                   </div>
-                  <div className="flex-grow">
-                    <h3 className="font-medium text-dark-charcoal">{dept.name}</h3>
-                    <p className="text-sm text-gray-600">{dept.description}</p>
+                  <div className="flex-grow min-w-0">
+                    <h3 className="font-medium text-dark-charcoal truncate">{dept.name}</h3>
+                    <p className="text-xs md:text-sm text-gray-600 truncate">{dept.description}</p>
                   </div>
-                  <div className="flex items-center gap-1 text-primary-green">
-                    <FaUsers size={14} />
+                  <div className="flex items-center gap-1 text-primary-green mr-2 text-xs md:text-sm">
+                    <FaUsers size={12} className="hidden xs:inline" />
                     <span className="font-medium">{dept.queueCount}</span>
-                    <span className="text-sm text-gray-500">queues</span>
+                    <span className="text-gray-500">queues</span>
                   </div>
                   <Link 
                     to={`/booking?dept=${dept.id}`}
-                    className="bg-white border border-primary-green text-primary-green hover:bg-primary-green hover:text-white px-3 py-1.5 rounded text-sm font-medium transition-colors duration-300 opacity-0 group-hover:opacity-100"
+                    className="bg-white border border-primary-green text-primary-green hover:bg-primary-green hover:text-white px-2 md:px-3 py-1 md:py-1.5 rounded text-xs md:text-sm font-medium transition-colors duration-300 md:opacity-0 md:group-hover:opacity-100"
                   >
                     Join
                   </Link>

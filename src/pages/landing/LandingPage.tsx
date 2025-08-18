@@ -272,6 +272,13 @@ const LandingPage = () => {
               <span className="relative z-10">Login</span>
               <span className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></span>
             </Link>
+            <Link
+              to="/staff/login"
+              className="border-2 border-blue-400 text-white hover:bg-blue-400/20 font-bold py-4 px-10 rounded-lg transition-all duration-300 inline-block transform hover:-translate-y-2 relative overflow-hidden group"
+            >
+              <span className="relative z-10">Staff Portal</span>
+              <span className="absolute inset-0 bg-blue-400/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></span>
+            </Link>
           </div>
         </div>
       </section>

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import Layout from '../../components/layout/Layout';
 import { useStore } from '../../data/store';
-import { useUser } from '../../context/UserContext';
+import { useUser } from '../../context/useUser';
 import { FaCalendarAlt, FaBuilding, FaIdCard, FaUser } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 
@@ -70,7 +70,7 @@ const BookingPage = () => {
     }
     
     if (!formData.studentId.trim()) {
-      newErrors.studentId = 'Student ID is required';
+      newErrors.studentId = 'Matric Number is required';
       isValid = false;
     }
     
@@ -108,7 +108,8 @@ const BookingPage = () => {
         // Add to user queues with the context
         await joinQueue(
           formData.department,
-          queueName
+          queueName,
+          formData.timeSlot
         );
         
         // Show success message
@@ -236,11 +237,11 @@ const BookingPage = () => {
               {errors.name && <p className="mt-1 text-error-red text-sm">{errors.name}</p>}
             </div>
             
-            {/* Student ID */}
+            {/* Matric Number */}
             <div>
               <label htmlFor="studentId" className="block text-dark-charcoal font-medium mb-2 flex items-center gap-1.5">
                 <FaIdCard className="text-primary-green" size={14} />
-                <span>Student ID</span>
+                <span>Matric Number</span>
               </label>
               <div className="relative">
                 <input
@@ -252,7 +253,7 @@ const BookingPage = () => {
                   className={`w-full pl-10 px-4 py-3 rounded-lg border ${
                     errors.studentId ? 'border-error-red' : 'border-gray-300'
                   } focus:outline-none focus:ring-2 focus:ring-primary-green focus:border-transparent`}
-                  placeholder="Enter your student ID"
+                  placeholder="22/0206"
                   readOnly
                 />
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -284,7 +285,7 @@ const BookingPage = () => {
                   <option value="">Select a department</option>
                   {availableDepartments.map((dept) => (
                     <option key={dept.id} value={dept.id}>
-                      {dept.name} ({dept.queueCount} {dept.queueCount === 1 ? 'queue' : 'queues'})
+                      {dept.name}
                     </option>
                   ))}
                 </select>

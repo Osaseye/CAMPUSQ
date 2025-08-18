@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import campusqLogo from '../../assets/Professional__CampusQ__Logo_with_Fresh_Aesthetic-removebg-preview.png';
 import { FaUser, FaEnvelope, FaLock, FaIdCard, FaUserGraduate, FaSchool } from 'react-icons/fa';
-import { useUser } from '../../context/UserContext';
+import { useUser } from '../../context/useUser';
 
 const SignupPage = () => {
   const navigate = useNavigate();
@@ -57,6 +57,12 @@ const SignupPage = () => {
       return;
     }
     
+    // Validate matric number format (format: XX/XXXX)
+    if (!formData.studentId.match(/^\d{2}\/\d{4}$/)) {
+      setError('Please enter a valid matric number (format: 22/0206)');
+      return;
+    }
+    
     if (!validateEmail(formData.email)) {
       setError('Please enter a valid educational email address (.edu)');
       return;
@@ -87,54 +93,103 @@ const SignupPage = () => {
       
       setIsAuthenticated(true);
       setLoading(false);
-      navigate('/booking');
+      navigate('/welcome');
     }, 1500);
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-light-gray to-white flex flex-col justify-center items-center p-4 py-10 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-dark-charcoal to-primary-green flex flex-col justify-center items-center p-4 py-10 relative overflow-hidden">
       {/* Background animated elements */}
       <div className="absolute inset-0 overflow-hidden opacity-30 pointer-events-none">
-        <div className="absolute h-96 w-96 rounded-full bg-primary-green/10 -top-48 -right-48 animate-pulse" style={{ animationDuration: '12s' }}></div>
-        <div className="absolute h-80 w-80 rounded-full bg-primary-green/10 -bottom-40 -left-40 animate-pulse" style={{ animationDuration: '8s' }}></div>
-        <div className="absolute top-0 right-0 w-full h-full opacity-5 bg-[radial-gradient(#6DBE45_1px,transparent_1px)] bg-[size:20px_20px]"></div>
-        <div className="absolute top-1/4 left-1/3 w-48 h-48 rounded-full bg-primary-green/5 animate-pulse" style={{ animationDuration: '15s' }}></div>
+        <div className="absolute h-96 w-96 rounded-full bg-white/10 -top-48 -right-48 animate-pulse" style={{ animationDuration: '12s' }}></div>
+        <div className="absolute h-80 w-80 rounded-full bg-white/10 -bottom-40 -left-40 animate-pulse" style={{ animationDuration: '8s' }}></div>
+        <div className="absolute top-0 right-0 w-full h-full opacity-5 bg-[radial-gradient(#ffffff_1px,transparent_1px)] bg-[size:20px_20px]"></div>
+        <div className="absolute top-1/4 left-1/3 w-48 h-48 rounded-full bg-white/5 animate-pulse" style={{ animationDuration: '15s' }}></div>
       </div>
 
-      <div className={`max-w-lg w-full bg-white rounded-xl shadow-2xl p-8 relative transform transition-all duration-700 ${
+      <div className={`max-w-4xl w-full bg-white rounded-xl shadow-2xl relative transform transition-all duration-700 ${
         animateIn ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-4 opacity-0 scale-95'
       }`}>
-        {/* Card shine effect */}
-        <div className="absolute inset-0 overflow-hidden rounded-xl pointer-events-none">
-          <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-white/50 via-white/0 to-primary-green/10 animate-shimmer opacity-50"></div>
-        </div>
-        
-        {/* Logo with animation */}
-        <div className="text-center mb-6">
-          <div className="relative inline-block">
-            <div className="absolute inset-0 bg-gradient-to-r from-primary-green/0 via-primary-green/30 to-primary-green/0 rounded-full opacity-0 group-hover:opacity-100 blur-xl transition-opacity"></div>
-            <img 
-              src={campusqLogo} 
-              alt="CampusQ" 
-              className="h-20 mx-auto mb-4 filter drop-shadow-lg transition-transform duration-500 hover:scale-110" 
-            />
+        <div className="flex flex-col md:flex-row">
+          <div className="md:w-1/2 p-8 bg-primary-green rounded-l-xl hidden md:flex md:flex-col md:justify-center md:items-center">
+            <div className="text-white text-center mb-8">
+              <div className="relative inline-block">
+                <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/30 to-white/0 rounded-full opacity-0 group-hover:opacity-100 blur-xl transition-opacity"></div>
+                <img 
+                  src={campusqLogo} 
+                  alt="CampusQ" 
+                  className="h-24 mx-auto mb-4 filter drop-shadow-lg transition-transform duration-500 hover:scale-110" 
+                />
+              </div>
+              
+              <h1 className="text-4xl font-bold mb-4">CampusQ</h1>
+              <p className="text-white/80 text-lg mb-8">Create an account to start using our queue management system</p>
+              
+              <div className="bg-white/10 p-6 rounded-lg backdrop-blur-sm">
+                <p className="text-white font-medium mb-3">Benefits of Joining</p>
+                <ul className="space-y-2 text-sm text-white/90 text-left">
+                  <li className="flex items-center gap-2">
+                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span>Access to all campus services</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span>Real-time queue updates</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span>Queue from anywhere on campus</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span>Save time with streamlined services</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
           </div>
-          
-          <h2 className="text-3xl font-bold mb-1 text-primary-green">Create Your Account</h2>
-          <p className="text-gray-600 mt-2 flex items-center justify-center gap-1">
-            <FaUserGraduate className="text-primary-green" />
-            <span>Join CampusQ to start booking services</span>
-          </p>
-        </div>
-        
-        {error && (
-          <div className="bg-error-red/10 text-error-red p-3 rounded-lg mb-6 text-sm flex items-center">
-            <svg className="w-5 h-5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-            </svg>
-            {error}
-          </div>
-        )}
+
+          <div className="md:w-1/2 p-8">
+            {/* Logo for mobile view */}
+            <div className="mb-8 md:hidden">
+              <div className="bg-primary-green rounded-lg p-6 mb-6">
+             <div className="mb-8 md:hidden">
+              <div className="bg-primary-green rounded-lg p-6 mb-6 flex justify-center">
+              <img 
+                src={campusqLogo} 
+                alt="CampusQ" 
+                className="h-20 filter drop-shadow-lg transition-transform duration-500 hover:scale-110" 
+              />
+              </div>
+            </div>
+              </div>
+            </div>
+            
+            {/* Content */}
+            <div className="text-center mb-6">
+              <h2 className="text-3xl font-bold mb-1 text-primary-green">Create Your Account</h2>
+              <p className="text-gray-600 mt-2 flex items-center justify-center gap-1">
+                <FaUserGraduate className="text-primary-green" />
+                <span>Join CampusQ to start booking services</span>
+              </p>
+            </div>
+            
+            {error && (
+              <div className="bg-error-red/10 text-error-red p-3 rounded-lg mb-6 text-sm flex items-center">
+                <svg className="w-5 h-5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                </svg>
+                {error}
+              </div>
+            )}
         
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -184,7 +239,7 @@ const SignupPage = () => {
           <div className="transform transition-all duration-500" style={{ transitionDelay: '200ms' }}>
             <label htmlFor="studentId" className="block text-gray-700 font-medium mb-2 flex items-center gap-1.5">
               <FaIdCard className="text-primary-green" size={14} />
-              <span>Student ID*</span>
+              <span>Matric Number*</span>
             </label>
             <div className="relative group focus-within:shadow-[0_0_0_2px_rgba(109,190,69,0.2)]">
               <input
@@ -192,7 +247,7 @@ const SignupPage = () => {
                 id="studentId"
                 name="studentId"
                 className="w-full pl-11 pr-4 py-3.5 rounded-lg border border-gray-300 group-focus-within:border-primary-green focus:outline-none transition-all duration-300"
-                placeholder="ST12345"
+                placeholder="22/0206"
                 value={formData.studentId}
                 onChange={handleChange}
               />
@@ -341,6 +396,8 @@ const SignupPage = () => {
             </svg>
             Back to Home
           </Link>
+        </div>
+          </div>
         </div>
       </div>
     </div>
